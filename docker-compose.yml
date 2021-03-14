@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  gps-logger:
+    build: .
+    container_name: gps-logger
+    environment:
+      TZ: Asia/Tokyo
+    tty: true
+    network_mode: "host"
