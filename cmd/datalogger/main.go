@@ -6,30 +6,25 @@ import (
 	"os/signal"
 	"syscall"
 
-	gpsd "github.com/koppacetic/go-gpsd"
+	"github.com/ktr03rtk/go-gps-logger/pkg/datacommunicator"
 )
 
 func main() {
-	gps, err := gpsd.Dial(gpsd.DefaultAddress)
-	if err != nil {
-		log.Fatalf("Failed to connect to GPSD: %s", err)
-	}
-
-	gps.Subscribe("SKY", func(r interface{}) {
-		sky := r.(*gpsd.SKYReport)
-		log.Printf("%d satellites", len(sky.Satellites))
-	})
-	gps.Subscribe("TPV", func(r interface{}) {
-		tpv := r.(*gpsd.TPVReport)
-		log.Printf("mode=%v time=%s", tpv.Mode, tpv.Time)
-		log.Printf("Location (%f,%f)", tpv.Lat, tpv.Lon)
-	})
+	a := *datacommunicator.NewCommunicator()
+	a.Communicate()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
 
-	gps.Run()
+	go func() {
+		for {
+			data := a.Receive()
+
+			log.Printf("%%#v (%#v)", data)
+		}
+	}()
+
 	<-sig
 
-	gps.Close()
+	a.Close()
 }
