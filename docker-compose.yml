@@ -8,3 +8,5 @@ services:
       TZ: Asia/Tokyo
     tty: true
     network_mode: "host"
+    volumes:
+      - .:/go/src/app
