@@ -7,8 +7,8 @@ import (
 )
 
 type Communicator struct {
-	session       *gpsd.Session
-	received_data chan gpsd.TPVReport
+	session      *gpsd.Session
+	receivedData chan gpsd.TPVReport
 }
 
 func NewCommunicator() *Communicator {
@@ -18,7 +18,7 @@ func NewCommunicator() *Communicator {
 		log.Fatalf("Failed to connect to GPSD: %s", err)
 	}
 	c.session = session
-	c.received_data = make(chan gpsd.TPVReport)
+	c.receivedData = make(chan gpsd.TPVReport)
 	return c
 }
 
@@ -26,14 +26,14 @@ func (c *Communicator) Communicate() {
 
 	c.session.Subscribe("TPV", func(r interface{}) {
 		tpv := r.(*gpsd.TPVReport)
-		c.received_data <- *tpv
+		c.receivedData <- *tpv
 	})
 
 	c.session.Run()
 }
 
 func (c *Communicator) Receive() gpsd.TPVReport {
-	data := <-c.received_data
+	data := <-c.receivedData
 	return data
 }
 
