@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/ktr03rtk/go-gps-logger/pkg/datacommunicator"
+	"github.com/ktr03rtk/go-gps-logger/pkg/dataconverter"
 )
 
 func main() {
@@ -21,6 +22,8 @@ func main() {
 			data := a.Receive()
 
 			log.Printf("%%#v (%#v)", data)
+			dataconverter.Convert(data)
+
 		}
 	}()
 
