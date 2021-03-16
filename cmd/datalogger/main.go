@@ -1,33 +1,34 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/ktr03rtk/go-gps-logger/pkg/datacommunicator"
 	"github.com/ktr03rtk/go-gps-logger/pkg/dataconverter"
+	"github.com/ktr03rtk/go-gps-logger/pkg/datawriter"
 )
 
 func main() {
-	a := *datacommunicator.NewCommunicator()
-	a.Communicate()
+	com := *datacommunicator.NewCommunicator()
+	com.Communicate()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
 
 	go func() {
 		for {
-			data := a.Receive()
+			data := com.Receive()
 
-			log.Printf("%%#v (%#v)", data)
-			dataconverter.Convert(data)
+			converted_data := dataconverter.Convert(data)
+
+			datawriter.Write(converted_data)
 
 		}
 	}()
 
 	<-sig
 
-	a.Close()
+	com.Close()
 }

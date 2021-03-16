@@ -6,18 +6,18 @@ import (
 	gpsd "github.com/koppacetic/go-gpsd"
 )
 
-type ConvertedDataSet map[string]convertedData
+type ConvertedDataSet map[string]ConvertedData
 
-type convertedData struct {
-	timestamp string
-	value1    string
+type ConvertedData struct {
+	Timestamp string `json:"timestamp"`
+	Value1    string `json:"value1"`
 }
 
 func Convert(r gpsd.TPVReport) ConvertedDataSet {
 	time := r.Time.Format(("2006-01-02T15:04:05.000000Z"))
 	dataSet := make(ConvertedDataSet)
 
-	dataSet["mode"] = convertedData{
+	dataSet["mode"] = ConvertedData{
 		time,
 		string(r.Mode),
 	}
@@ -26,11 +26,11 @@ func Convert(r gpsd.TPVReport) ConvertedDataSet {
 		return dataSet
 	}
 
-	dataSet["latitude"] = convertedData{
+	dataSet["latitude"] = ConvertedData{
 		time,
 		strconv.FormatFloat(r.Lat, 'f', -1, 64),
 	}
-	dataSet["longitude"] = convertedData{
+	dataSet["longitude"] = ConvertedData{
 		time,
 		strconv.FormatFloat(r.Lon, 'f', -1, 64),
 	}
@@ -39,7 +39,7 @@ func Convert(r gpsd.TPVReport) ConvertedDataSet {
 		return dataSet
 	}
 
-	dataSet["altitude"] = convertedData{
+	dataSet["altitude"] = ConvertedData{
 		time,
 		strconv.FormatFloat(r.Alt, 'f', -1, 64),
 	}

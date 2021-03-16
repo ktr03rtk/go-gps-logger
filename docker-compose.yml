@@ -5,6 +5,10 @@ services:
     build: .
     container_name: gps-logger
     environment:
+      APP_ROOT: /opt/dcpp/gps_logger
+      CONTAINER_NAME: gps_logger
+      DATA_PATH: /var/myapp/data
+      LOG_PATH: /var/myapp/log
       TZ: Asia/Tokyo
     tty: true
     network_mode: "host"
