@@ -45,7 +45,7 @@ func gpsSpecSatisfied(g Gps) error {
 	}
 
 	if g.Lon < MINIMUM_LON || g.Lon > MAXIMUM_LON {
-		return errors.Errorf("failed to satisfy GPS LON Spec")
+		return errors.Errorf("failed to satisfy GPS Lon Spec")
 	}
 
 	return nil
