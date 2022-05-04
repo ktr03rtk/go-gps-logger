@@ -14,7 +14,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func TestGpsReceiveUsecaseExecuteNormalCase(t *testing.T) {
+func TestGpsReceiveUsecaseExecute(t *testing.T) {
 	date := time.Date(2022, 5, 3, 0, 9, 0, 0, time.Local)
 	duration := 1000 * time.Millisecond
 
@@ -79,6 +79,54 @@ func TestGpsReceiveUsecaseExecuteNormalCase(t *testing.T) {
 			} else {
 				assert.Exactly(t, tt.expectedErr, nil, "error is expected but received nil")
 			}
+		})
+	}
+}
+
+func TestGpsReceiveUsecaseExecuteContexCancelled(t *testing.T) {
+	duration := 1000 * time.Millisecond
+
+	tests := []struct {
+		name              string
+		returnErr         error
+		expectedOutput    *model.Gps
+		expectedErr       error
+		expectedCallTimes int
+	}{
+		{
+			"context canceled case",
+			nil,
+			nil,
+			nil,
+			0,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			repository := mock.NewMockGpsReceiveRepository(ctrl)
+			mock := clock.NewMock()
+			usecase := NewGpsReceiveUsecase(repository, mock)
+
+			context, cancel := context.WithCancel(context.Background())
+			eg, ctx := errgroup.WithContext(context)
+			ch := make(chan *model.Gps)
+
+			repository.EXPECT().Receive().Return(tt.expectedOutput, tt.returnErr).Times(tt.expectedCallTimes)
+			eg.Go(func() error { return usecase.Execute(ctx, duration, ch) })
+
+			cancel()
+			mock.Add(duration)
+			gosched()
+			_, ok := <-ch
+
+			err := eg.Wait()
+			assert.Nil(t, err, "error is not expected but received: %v", err)
+			assert.False(t, ok, "channel is expected to be closed")
 		})
 	}
 }
