@@ -1,0 +1,102 @@
+---
+- name: Set a hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Update package
+  apt:
+    update_cache: yes
+
+- name: Upgrade package
+  apt:
+    upgrade: full
+  register: apt_action
+  retries: 100
+  until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
+
+- name: Restrict password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    insertafter: "^#PasswordAuthentication"
+    line: "PasswordAuthentication no"
+
+- name: Restrict challenge response authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^ChallengeResponseAuthentication"
+    insertafter: "^#ChallengeResponseAuthentication"
+    line: "ChallengeResponseAuthentication no"
+
+- name: Restrict root login
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    insertafter: "^#PermitRootLogin"
+    line: "PermitRootLogin no"
+
+- name: Restart sshd
+  service:
+    name: sshd
+    state: restarted
+
+- name: Set static IP address
+  template:
+    src: templates/99-static.yaml.j2
+    dest: /etc/netplan/99-static.yaml
+
+- name: Default ufw setting
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: Allow all access to port
+  ufw:
+    rule: allow
+    port: "{{ sshd_port }}"
+    proto: tcp
+
+- name: Install packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+
+- name: Add docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add apt repository
+  apt_repository:
+    repo: "deb [arch=arm64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+
+- name: Install Docker packages
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+
+- name: Add user to docker group
+  user:
+    name: "{{ ansible_ssh_user }}"
+    groups: docker
+    append: yes
+
+- name: Install gpsd packages
+  apt:
+    name: gpsd
+
+- name: Set gpsd config
+  template:
+    src: templates/gpsd.j2
+    dest: /etc/default/gpsd
+
+- name: Restart gpsd
+  service:
+    name: gpsd
+    state: restarted
