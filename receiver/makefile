@@ -3,6 +3,7 @@ TEST?=./...
 TESTARGS=-test.v
 FUNC=
 TZ?=Asia/Tokyo
+HOST=pi1
 
 default: build
 
@@ -50,4 +51,7 @@ fmt:
 fmtcheck:
 	sh -c "'$(CURDIR)/../scripts/gofmtcheck.sh'"
 
-.PHONY: default build run test_up test_down test hottest generate fmt fmtcheck
+sync:
+	sh -c "'$(CURDIR)/../scripts/rsync.sh' $(HOST)"
+
+.PHONY: default build run test_up test_down test hottest generate fmt fmtcheck sync
