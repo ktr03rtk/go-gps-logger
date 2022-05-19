@@ -6,6 +6,7 @@ on:
   #   branches:
   #     - "main"
 env:
+  TZ: Asia/Tokyo
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/receiver
 
@@ -54,6 +55,8 @@ jobs:
         with:
           context: ./receiver
           platforms: linux/amd64, linux/arm64
+          build-args:
+            TZ: ${{ env.TZ }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
