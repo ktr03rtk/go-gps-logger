@@ -25,7 +25,7 @@ type receivedData struct {
 func NewGpsAdapter(ctx context.Context) (repository.GpsReceiveRepository, error) {
 	session, err := gpsd.Dial(gpsd.DefaultAddress)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to connect to gpad")
+		return nil, errors.Wrap(err, "failed to connect to gpsd")
 	}
 
 	c := &gpsAdapter{
