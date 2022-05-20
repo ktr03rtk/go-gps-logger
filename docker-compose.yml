@@ -1,0 +1,14 @@
+services:
+  receiver:
+    container_name: receiver
+    image: ghcr.io/ktr03rtk/go-gps-logger/receiver:main
+    volumes:
+      - /var/data/gps:/var/data/gps
+    network_mode: host
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
+    environment:
+      KEY: VALUE
+      DIST_DIRECTORY: /var/data/gps/raw
+      INTERVAL_SECONDS: 10
+    restart: always
