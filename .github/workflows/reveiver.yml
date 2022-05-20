@@ -1,0 +1,18 @@
+name: Create and publish a Docker image
+
+on:
+  push
+  # push:
+  #   branches:
+  #     - "main"
+
+jobs:
+  test:
+    uses: ./.github/workflows/test-workflow.yml
+    with:
+      targetDir: receiver
+
+  build-and-push-image:
+    uses: ./.github/workflows/build-workflow.yml
+    with:
+      targetDir: receiver

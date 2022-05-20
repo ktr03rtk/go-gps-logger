@@ -1,28 +1,22 @@
-name: Create and publish a Docker image
+name: Build and push
 
 on:
-  push
-  # push:
-  #   branches:
-  #     - "main"
-env:
-  TZ: Asia/Tokyo
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/receiver
+  workflow_call:
+    inputs:
+      targetDir:
+        required: true
+        type: string
 
 jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-    with:
-      targetDir: receiver
-
   build-and-push-image:
     runs-on: ubuntu-20.04
-    needs: test
     permissions:
       contents: read
       packages: write
-
+    env:
+      TZ: Asia/Tokyo
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}/${{ inputs.targetDir }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -51,7 +45,7 @@ jobs:
 
       - uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache
+          path: /tmp/.buildx-${{ inputs.targetDir }}-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
@@ -59,16 +53,16 @@ jobs:
       - name: Build multi architecture images
         uses: docker/build-push-action@v2
         with:
-          context: ./receiver
+          context: ./${{ inputs.targetDir }}
           platforms: linux/amd64, linux/arm64
           build-args: TZ=${{ env.TZ }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=local,src=/tmp/.buildx-${{ inputs.targetDir }}-cache
+          cache-to: type=local,dest=/tmp/.buildx-${{ inputs.targetDir }}-cache-new,mode=max
 
       - name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          rm -rf /tmp/.buildx-${{ inputs.targetDir }}-cache
+          mv /tmp/.buildx-${{ inputs.targetDir }}-cache-new /tmp/.buildx-${{ inputs.targetDir }}-cache
