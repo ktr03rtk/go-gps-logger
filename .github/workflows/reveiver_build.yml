@@ -13,6 +13,8 @@ env:
 jobs:
   test:
     uses: ./.github/workflows/test.yml
+    with:
+      targetDir: receiver
 
   build-and-push-image:
     runs-on: ubuntu-20.04
