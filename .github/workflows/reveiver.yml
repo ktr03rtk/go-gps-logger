@@ -13,6 +13,13 @@ jobs:
       targetDir: receiver
 
   build-and-push-image:
+    needs: test
     uses: ./.github/workflows/build-workflow.yml
     with:
       targetDir: receiver
+
+  trivy:
+    runs-on: ubuntu-20.04
+    needs: build-and-push-image:
+    steps:
+      - run: echo ${{ needs.build-and-push-image.outputs.image-ref }}

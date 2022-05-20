@@ -6,6 +6,9 @@ on:
       targetDir:
         required: true
         type: string
+    outputs:
+      image-ref:
+        value: ${{ jobs.build-and-push-image.outputs.image-ref }}
 
 jobs:
   build-and-push-image:
@@ -17,6 +20,8 @@ jobs:
       TZ: Asia/Tokyo
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}/${{ inputs.targetDir }}
+    outputs:
+      image-ref: ${{ steps.output.outputs.ref }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -61,6 +66,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-${{ inputs.targetDir }}-cache
           cache-to: type=local,dest=/tmp/.buildx-${{ inputs.targetDir }}-cache-new,mode=max
+
+      - name: Output image reference
+        id: output
+        run: echo "::set-output name=ref::${{ steps.meta.outputs.tags }}"
 
       - name: Move cache
         run: |
