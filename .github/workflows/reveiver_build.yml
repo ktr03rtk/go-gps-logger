@@ -12,20 +12,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.18.x
-
-      - name: Test
-        run: |
-          cd receiver
-          go test ./...
+    uses: ./.github/workflows/test.yml
 
   build-and-push-image:
     runs-on: ubuntu-20.04
