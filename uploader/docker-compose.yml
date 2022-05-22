@@ -3,14 +3,12 @@ services:
     container_name: uploader
     build:
       context: .
-      target: build-stage
       args:
         TZ: Asia/Tokyo
     network_mode: host
     tty: true
     volumes:
       - /var/data/gps:/var/data/gps
-      - ${PWD}/:/opt/gps_uploader
       - ${PWD}/cert/ca.crt:${CA_PATH}
       - ${PWD}/cert/client.crt:${CERT_PATH}
       - ${PWD}/cert/client.key:${KEY_PATH}

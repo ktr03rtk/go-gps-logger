@@ -1,0 +1,6 @@
+services:
+  uploader:
+    build:
+      target: build-stage
+    volumes:
+      - ${PWD}/:/opt/gps_uploader

@@ -8,28 +8,18 @@ HOST=pi1
 default: build
 
 build: fmtcheck
-	docker build --target build-stage -t dev-img --build-arg TZ=$(TZ) .
-	docker build -t prod-img --build-arg TZ=$(TZ) .
+	@docker-compose build
 
-run: build
-	docker run -ti --rm --net=host \
-		-v $(PWD)/tmp/data:/var/data \
-    -v ${PWD}/cert/ca.crt:${CA_PATH} \
-    -v ${PWD}/cert/client.crt:${CERT_PATH} \
-    -v ${PWD}/cert/client.key:${KEY_PATH}
-		--name gps_uploader prod-img:latest
+run: fmtcheck
+	docker-compose up --build
 
 test_up: test_down
-	docker run -ti --rm --net=host \
-		-v $(PWD)/:/opt/gps_uploader/ \
-		-v $(PWD)/tmp/data:/var/data \
-    -v ${PWD}/cert/ca.crt:${CA_PATH} \
-    -v ${PWD}/cert/client.crt:${CERT_PATH} \
-    -v ${PWD}/cert/client.key:${KEY_PATH}
-		--name gps_uploader dev-img:latest
+	@COMPOSE_FILE="docker-compose.yml:docker-compose-dev.yml" TARGET=build-stage \
+		docker-compose run --rm uploader
 
 test_down:
-	docker rm -f build-server
+	@COMPOSE_FILE="docker-compose.yml:docker-compose-dev.yml" \
+		docker-compose down
 
 ################################
 # Below commmands are to be used in container
