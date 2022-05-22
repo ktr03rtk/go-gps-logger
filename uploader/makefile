@@ -8,18 +8,20 @@ HOST=pi1
 default: build
 
 build: fmtcheck
-	@docker-compose build
+	@docker compose build
 
 run: fmtcheck
-	docker-compose up --build
+	docker compose up --build
 
 test_up: test_down
-	@COMPOSE_FILE="docker-compose.yml:docker-compose-dev.yml" TARGET=build-stage \
-		docker-compose run --rm uploader
+	@COMPOSE_FILE="docker-compose.yml:docker-compose-dev.yml" \
+		docker compose build
+	@COMPOSE_FILE="docker-compose.yml:docker-compose-dev.yml" \
+		docker compose run --rm uploader
 
 test_down:
 	@COMPOSE_FILE="docker-compose.yml:docker-compose-dev.yml" \
-		docker-compose down
+		docker compose down
 
 ################################
 # Below commmands are to be used in container

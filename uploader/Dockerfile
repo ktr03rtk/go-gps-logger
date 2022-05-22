@@ -21,7 +21,6 @@ RUN go mod download \
 COPY ./ ./
 RUN CGO_ENABLED=0 go build -ldflags="-extldflags=-static" -gcflags="all=-N -l" -o uploader
 
-
 CMD ["/bin/sh"]
 
 # =========================================
