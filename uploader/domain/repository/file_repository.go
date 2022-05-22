@@ -7,5 +7,5 @@ import (
 
 type FileRepository interface {
 	Read() (*model.Payload, error)
-	Delete([]*model.BaseFilePath) error
+	Delete([]model.BaseFilePath) error
 }

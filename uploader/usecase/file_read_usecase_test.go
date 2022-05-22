@@ -26,7 +26,7 @@ func TestFileReadUsecaseExecute(t *testing.T) {
 		{
 			"read error case",
 			errors.New("error occurred"),
-			&model.Payload{Message: []byte("output-payload1\noutput-payload2"), FilePaths: []model.BaseFilePath{"file1", "file2"}},
+			nil,
 			errors.New("failed to execute file read usecase"),
 		},
 	}

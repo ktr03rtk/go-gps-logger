@@ -3,8 +3,8 @@ package model
 type BaseFilePath string
 
 type Payload struct {
-	message   []byte
-	filePaths []BaseFilePath
+	Message   []byte
+	FilePaths []BaseFilePath
 }
 
 func NewPayload() *Payload {

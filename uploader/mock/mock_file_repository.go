@@ -35,7 +35,7 @@ func (m *MockFileRepository) EXPECT() *MockFileRepositoryMockRecorder {
 }
 
 // Delete mocks base method.
-func (m *MockFileRepository) Delete(arg0 []*model.BaseFilePath) error {
+func (m *MockFileRepository) Delete(arg0 []model.BaseFilePath) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", arg0)
 	ret0, _ := ret[0].(error)
