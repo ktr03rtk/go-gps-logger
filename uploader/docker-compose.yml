@@ -1,0 +1,28 @@
+services:
+  uploader:
+    container_name: uploader
+    build:
+      context: .
+      args:
+        TZ: Asia/Tokyo
+    network_mode: host
+    tty: true
+    volumes:
+      - /var/data/gps:/var/data/gps
+      - ${PWD}/cert/ca.crt:${CA_PATH}
+      - ${PWD}/cert/client.crt:${CERT_PATH}
+      - ${PWD}/cert/client.key:${KEY_PATH}
+    environment:
+      SOURCE_DIRECTORY: /var/data/gps/raw
+      UPLOADE_INTERVAL_SECONDS: 60
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+      MQTT_CLIENT: ${MQTT_CLIENT}
+      TOPIC: ${TOPIC}
+      QOS: ${QOS}
+      KEEP_ALIVE: ${KEEP_ALIVE}
+      CONNECT_RETRY_DELAY: ${CONNECT_RETRY_DELAY}
+      DELAY_BETWEEN_MESSAGES: ${DELAY_BETWEEN_MESSAGES}
+      CA_PATH: ${CA_PATH}
+      CERT_PATH: ${CERT_PATH}
+      KEY_PATH: ${KEY_PATH}
