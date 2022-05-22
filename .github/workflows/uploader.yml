@@ -1,0 +1,13 @@
+name: Create and publish a uploader image
+
+on:
+  push:
+    paths:
+      - uploader/**
+
+jobs:
+  test:
+    uses: ./.github/workflows/test-workflow.yml
+    with:
+      targetDir: uploader
+

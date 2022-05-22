@@ -1,5 +1,10 @@
 package model
 
+const (
+	PayloadSize       = 4096 * 1024
+	MaxProcessFileNum = 1000
+)
+
 type BaseFilePath string
 
 type Payload struct {
@@ -8,6 +13,13 @@ type Payload struct {
 }
 
 func NewPayload() *Payload {
-	return &Payload{}
+	return &Payload{
+		Message:   make([]byte, 0, PayloadSize),
+		FilePaths: make([]BaseFilePath, 0, MaxProcessFileNum),
+	}
 }
 
+func (p *Payload) Add(msg []byte, filePath BaseFilePath) {
+	p.Message = append(p.Message, msg...)
+	p.FilePaths = append(p.FilePaths, filePath)
+}
