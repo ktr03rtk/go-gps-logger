@@ -14,6 +14,8 @@ import (
 )
 
 func TestGpsWriteUsecaseExecute(t *testing.T) {
+	t.Parallel()
+
 	date := time.Date(2022, 5, 3, 0, 9, 0, 0, time.Local)
 
 	tests := []struct {
@@ -49,6 +51,8 @@ func TestGpsWriteUsecaseExecute(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

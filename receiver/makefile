@@ -16,7 +16,7 @@ run: build
 		-v $(PWD)/tmp/data:/var/data \
 		--name gps_receiver prod-img:latest
 
-test_up: test_down
+test_up: test_down build
 	docker run -ti --rm --net=host \
 		-v $(PWD)/:/opt/gps_receiver/ \
 		-v $(PWD)/tmp/data:/var/data \

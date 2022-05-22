@@ -15,6 +15,8 @@ import (
 )
 
 func TestGpsReceiveUsecaseExecute(t *testing.T) {
+	t.Parallel()
+
 	date := time.Date(2022, 5, 3, 0, 9, 0, 0, time.Local)
 	duration := 1000 * time.Millisecond
 
@@ -44,6 +46,8 @@ func TestGpsReceiveUsecaseExecute(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -84,6 +88,8 @@ func TestGpsReceiveUsecaseExecute(t *testing.T) {
 }
 
 func TestGpsReceiveUsecaseExecuteContexCancelled(t *testing.T) {
+	t.Parallel()
+
 	duration := 1000 * time.Millisecond
 
 	tests := []struct {
@@ -105,6 +111,8 @@ func TestGpsReceiveUsecaseExecuteContexCancelled(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
