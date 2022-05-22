@@ -35,10 +35,10 @@ func (m *MockPayloadUploadRepository) EXPECT() *MockPayloadUploadRepositoryMockR
 }
 
 // Upload mocks base method.
-func (m *MockPayloadUploadRepository) Upload(arg0 *model.Payload) ([]*model.BaseFilePath, error) {
+func (m *MockPayloadUploadRepository) Upload(arg0 *model.Payload) ([]model.BaseFilePath, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Upload", arg0)
-	ret0, _ := ret[0].([]*model.BaseFilePath)
+	ret0, _ := ret[0].([]model.BaseFilePath)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

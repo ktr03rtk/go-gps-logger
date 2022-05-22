@@ -6,5 +6,5 @@ import (
 )
 
 type PayloadUploadRepository interface {
-	Upload(*model.Payload) ([]*model.BaseFilePath, error)
+	Upload(*model.Payload) ([]model.BaseFilePath, error)
 }
