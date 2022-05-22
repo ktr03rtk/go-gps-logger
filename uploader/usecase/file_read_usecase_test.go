@@ -11,6 +11,8 @@ import (
 )
 
 func TestFileReadUsecaseExecute(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		returnErr      error

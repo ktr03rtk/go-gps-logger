@@ -11,6 +11,8 @@ import (
 )
 
 func TestFileDeleteUsecaseExecute(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		input       []model.BaseFilePath
