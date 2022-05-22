@@ -14,18 +14,18 @@ build: fmtcheck
 run: build
 	docker run -ti --rm --net=host \
 		-v $(PWD)/tmp/data:/var/data \
-    -v ${PWD}/crt/ca.crt:${CA_PATH} \
-    -v ${PWD}/crt/client.crt:${CERT_PATH} \
-    -v ${PWD}/crt/client.key:${KEY_PATH}
+    -v ${PWD}/cert/ca.crt:${CA_PATH} \
+    -v ${PWD}/cert/client.crt:${CERT_PATH} \
+    -v ${PWD}/cert/client.key:${KEY_PATH}
 		--name gps_uploader prod-img:latest
 
 test_up: test_down
 	docker run -ti --rm --net=host \
 		-v $(PWD)/:/opt/gps_uploader/ \
 		-v $(PWD)/tmp/data:/var/data \
-    -v ${PWD}/crt/ca.crt:${CA_PATH} \
-    -v ${PWD}/crt/client.crt:${CERT_PATH} \
-    -v ${PWD}/crt/client.key:${KEY_PATH}
+    -v ${PWD}/cert/ca.crt:${CA_PATH} \
+    -v ${PWD}/cert/client.crt:${CERT_PATH} \
+    -v ${PWD}/cert/client.key:${KEY_PATH}
 		--name gps_uploader dev-img:latest
 
 test_down:

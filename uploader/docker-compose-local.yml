@@ -11,9 +11,9 @@ services:
     volumes:
       - /var/data/gps:/var/data/gps
       - ${PWD}/:/opt/gps_uploader
-      - ${PWD}/crt/ca.crt:${CA_PATH}
-      - ${PWD}/crt/client.crt:${CERT_PATH}
-      - ${PWD}/crt/client.key:${KEY_PATH}
+      - ${PWD}/cert/ca.crt:${CA_PATH}
+      - ${PWD}/cert/client.crt:${CERT_PATH}
+      - ${PWD}/cert/client.key:${KEY_PATH}
     environment:
       SOURCE_DIRECTORY: /var/data/gps/raw
       UPLOADE_INTERVAL_SECONDS: 60
