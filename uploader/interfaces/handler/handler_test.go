@@ -97,12 +97,13 @@ func TestLogUploadHandler(t *testing.T) {
 			mock := clock.NewMock()
 			h := NewLogUploadHandler(ru, uu, du, mock)
 
-			fr.EXPECT().Read().Return(tt.readOutput, tt.readErr).Times(tt.readCallTimes)
-			pr.EXPECT().Upload(tt.readOutput).Return(tt.uploadOutput, tt.uploadErr).Times(tt.uploadCallTimes)
-			fr.EXPECT().Delete(tt.uploadOutput).Return(tt.deleteErr).Times(tt.deleteCallTimes)
-
 			ctx, cancel := context.WithCancel(context.Background())
 			eg, ctx := errgroup.WithContext(ctx)
+
+			fr.EXPECT().Read().Return(tt.readOutput, tt.readErr).Times(tt.readCallTimes)
+			pr.EXPECT().Upload(ctx, tt.readOutput).Return(tt.uploadOutput, tt.uploadErr).Times(tt.uploadCallTimes)
+			fr.EXPECT().Delete(tt.uploadOutput).Return(tt.deleteErr).Times(tt.deleteCallTimes)
+
 			eg.Go(func() error { return h.Handle(ctx, duration) })
 
 			gosched()

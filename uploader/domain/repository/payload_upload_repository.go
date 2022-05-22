@@ -2,9 +2,11 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/ktr03rtk/go-gps-logger/uploader/domain/model"
 )
 
 type PayloadUploadRepository interface {
-	Upload(*model.Payload) ([]model.BaseFilePath, error)
+	Upload(context.Context, *model.Payload) ([]model.BaseFilePath, error)
 }

@@ -43,7 +43,7 @@ func (lh logUploadHandler) Handle(ctx context.Context, interval time.Duration) e
 				return err
 			}
 
-			filePaths, err := lh.payloadUploadUsecase.Execute(p)
+			filePaths, err := lh.payloadUploadUsecase.Execute(ctx, p)
 			if err != nil {
 				return err
 			}
