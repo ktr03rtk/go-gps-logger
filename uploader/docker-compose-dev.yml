@@ -3,4 +3,4 @@ services:
     build:
       target: build-stage
     volumes:
-      - ${PWD}/:/opt/gps_uploader
+      - ${PWD}:/opt/gps_uploader

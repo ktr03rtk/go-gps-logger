@@ -2,7 +2,7 @@ package model
 
 const (
 	PayloadSize       = 4096 * 1024
-	MaxProcessFileNum = 1000
+	MaxProcessFileNum = 100
 )
 
 type BaseFilePath string
