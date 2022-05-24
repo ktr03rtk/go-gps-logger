@@ -13,11 +13,40 @@
     name: gpsd
     state: restarted
 
-- name: GPS logger service start
+- name: Create gps logger directory
+  file:
+    path: /var/opt/gps_uploader/cert
+    state: directory
+    mode: 0755
+
+- name: Copy mqtt certs file
+  copy:
+    src: "{{ playbook_dir }}/../uploader/cert"
+    dest: /var/opt/gps_uploader
+
+- name: Copy docker-compose.yml
+  copy:
+    src: "{{ playbook_dir }}/../docker-compose-template.yml"
+    dest: /var/opt/gps_uploader/docker-compose.yml
+
+- name: Replace placeholder in docker-compose.yml
+  replace:
+    path: /var/opt/gps_uploader/docker-compose.yml
+    regexp: <IMAGE_TAG>
+    replace: "{{ IMAGE_TAG }}"
+
+- name: Create environment file
+  blockinfile:
+    path: /var/opt/gps_uploader/.env
+    create: true
+    block: |
+      TOPIC: "{{ TOPIC }}"
+      MQTT_HOST: "{{ MQTT_HOST }}"
+      MQTT_PORT: "{{ MQTT_PORT }}"
+      MQTT_CLIENT: "{{ MQTT_CLIENT }}"
+
+- name: Start gps logger
   shell: |
-    mkdir -p /var/gps-logger
-    cd /var/gps-logger
-    docker system prune -f
-    docker compose down
-    curl -sSL -o /var/gps-logger/docker-compose.yml https://raw.githubusercontent.com/ktr03rtk/go-gps-logger/main/docker-compose.yml
+    cd /var/opt/gps_uploader
+    docker system prune -af
     docker compose up -d
