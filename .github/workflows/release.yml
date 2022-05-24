@@ -33,7 +33,7 @@ jobs:
 
   trivy_receiver:
     runs-on: ubuntu-20.04
-    needs: build_and_push_image_receiver
+    needs: build_and_push_receiver
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -45,7 +45,7 @@ jobs:
 
   trivy_uploader:
     runs-on: ubuntu-20.04
-    needs: build_and_push_image_uploader
+    needs: build_and_push_uploader
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
