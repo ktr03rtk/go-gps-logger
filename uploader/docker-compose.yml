@@ -9,20 +9,17 @@ services:
     tty: true
     volumes:
       - /var/data/gps:/var/data/gps
-      - ${PWD}/cert/ca.crt:${CA_PATH}
-      - ${PWD}/cert/client.crt:${CERT_PATH}
-      - ${PWD}/cert/client.key:${KEY_PATH}
+      - ${PWD}/cert:/opt/gps_uploader/cert
     environment:
       SOURCE_DIRECTORY: /var/data/gps/raw
-      UPLOADE_INTERVAL_SECONDS: 60
+      UPLOAD_INTERVAL_SECONDS: 300
+      QOS: 1
+      KEEP_ALIVE: 60
+      CONNECT_RETRY_DELAY: 10000
+      CA_PATH: /opt/gps_uploader/cert/ca.crt
+      CERT_PATH: /opt/gps_uploader/cert/client.crt
+      KEY_PATH: /opt/gps_uploader/cert/client.key
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
       MQTT_CLIENT: ${MQTT_CLIENT}
       TOPIC: ${TOPIC}
-      QOS: ${QOS}
-      KEEP_ALIVE: ${KEEP_ALIVE}
-      CONNECT_RETRY_DELAY: ${CONNECT_RETRY_DELAY}
-      DELAY_BETWEEN_MESSAGES: ${DELAY_BETWEEN_MESSAGES}
-      CA_PATH: ${CA_PATH}
-      CERT_PATH: ${CERT_PATH}
-      KEY_PATH: ${KEY_PATH}

@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const fileExtention = ".raw"
+const fileExtention = ".dat"
 
 type filePersistence struct {
 	sourceDir string
@@ -27,6 +27,10 @@ func (fp *filePersistence) Read() (*model.Payload, error) {
 	targetFiles, err := searchTargetFiles(fp.sourceDir)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(targetFiles) == 0 {
+		return &model.Payload{}, nil
 	}
 
 	for _, file := range targetFiles {
@@ -48,6 +52,10 @@ func (fp *filePersistence) Read() (*model.Payload, error) {
 }
 
 func (fp *filePersistence) Delete(targetFiles []model.BaseFilePath) error {
+	if len(targetFiles) == 0 {
+		return nil
+	}
+
 	for _, baseFile := range targetFiles {
 		if err := os.Remove(filepath.Join(fp.sourceDir, string(baseFile))); err != nil {
 			return errors.Wrapf(err, "failed to remove file")
@@ -63,10 +71,16 @@ func searchTargetFiles(sourceDir string) ([]string, error) {
 		return nil, errors.Wrapf(err, "failed to find files")
 	}
 
-	sort.Strings(allFiles)
-	targetFiles := allFiles
+	fileLength := len(allFiles)
+	if fileLength <= 1 {
+		return []string{}, nil
+	}
 
-	if len(allFiles) >= model.MaxProcessFileNum {
+	sort.Strings(allFiles)
+	// skip processing latest file to avoid confliction with file write
+	targetFiles := allFiles[:fileLength-1]
+
+	if fileLength > model.MaxProcessFileNum {
 		targetFiles = allFiles[0:model.MaxProcessFileNum]
 	}
 

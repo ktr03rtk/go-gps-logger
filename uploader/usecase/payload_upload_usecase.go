@@ -1,13 +1,15 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/ktr03rtk/go-gps-logger/uploader/domain/model"
 	"github.com/ktr03rtk/go-gps-logger/uploader/domain/repository"
 	"github.com/pkg/errors"
 )
 
 type PayloadUploadUsecase interface {
-	Execute(*model.Payload) ([]model.BaseFilePath, error)
+	Execute(context.Context, *model.Payload) ([]model.BaseFilePath, error)
 }
 
 type modelUploadUsecase struct {
@@ -20,8 +22,8 @@ func NewPayloadUploadUsecase(pr repository.PayloadUploadRepository) PayloadUploa
 	}
 }
 
-func (uu *modelUploadUsecase) Execute(p *model.Payload) ([]model.BaseFilePath, error) {
-	filePaths, err := uu.payloadRepository.Upload(p)
+func (uu *modelUploadUsecase) Execute(ctx context.Context, p *model.Payload) ([]model.BaseFilePath, error) {
+	filePaths, err := uu.payloadRepository.Upload(ctx, p)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to execute payload upload usecase")
 	}

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -47,9 +48,11 @@ func TestFileReadUsecaseUsecaseExecute(t *testing.T) {
 			repository := mock.NewMockPayloadUploadRepository(ctrl)
 			usecase := NewPayloadUploadUsecase(repository)
 
-			repository.EXPECT().Upload(tt.input).Return(tt.expectedOutput, tt.returnErr).Times(1)
+			ctx := context.Background()
 
-			output, err := usecase.Execute(tt.input)
+			repository.EXPECT().Upload(ctx, tt.input).Return(tt.expectedOutput, tt.returnErr).Times(1)
+
+			output, err := usecase.Execute(ctx, tt.input)
 			if err != nil {
 				if tt.expectedErr != nil {
 					assert.Contains(t, err.Error(), tt.expectedErr.Error())
