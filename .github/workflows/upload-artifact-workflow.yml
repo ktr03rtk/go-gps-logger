@@ -1,0 +1,23 @@
+name: Upload artifact
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+
+jobs:
+  upload:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: replace placeholder
+        run: |
+          cp docker-compose-template.yml docker-compose.yml
+          sed -i 's/<IMAGE_TAG>/${{ inputs.tag }}/g' docker-compose.yml
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-compose.yml
+          path: docker-compose.yml

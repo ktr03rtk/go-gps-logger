@@ -1,0 +1,65 @@
+name: Create and publish a receiver image
+
+on:
+  push:
+    tags
+    # tags:
+    #   - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+  test_receiver:
+    uses: ./.github/workflows/test-workflow.yml
+    with:
+      targetDir: receiver
+
+  test_uploader:
+    uses: ./.github/workflows/test-workflow.yml
+    with:
+      targetDir: uploader
+
+  build_and_push_receiver:
+    needs: test_receiver
+    uses: ./.github/workflows/build-workflow.yml
+    with:
+      targetDir: receiver
+      tag: ${{ github.ref_name }}
+
+  build_and_push_uploader:
+    needs: test_uploader
+    uses: ./.github/workflows/build-workflow.yml
+    with:
+      targetDir: receiver
+      tag: ${{ github.ref_name }}
+
+  trivy_receiver:
+    runs-on: ubuntu-20.04
+    needs: build_and_push_image_receiver
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.build_and_push_receiver.outputs.image-ref }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+
+  trivy_uploader:
+    runs-on: ubuntu-20.04
+    needs: build_and_push_image_uploader
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.build_and_push_uploader.outputs.image-ref }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+
+  release:
+    runs-on: ubuntu-20.04
+    needs:
+      - trivy_receiver
+      - trivy_uploader
+    uses: ./.github/workflows/build-workflow.yml
+    with:
+      tag: ${{ github.ref_name }}
