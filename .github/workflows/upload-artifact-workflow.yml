@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}
 
       - name: replace placeholder
         run: |
