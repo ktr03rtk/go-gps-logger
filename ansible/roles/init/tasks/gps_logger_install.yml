@@ -1,0 +1,23 @@
+---
+- name: Install gpsd packages
+  apt:
+    name: gpsd
+
+- name: Set gpsd config
+  template:
+    src: templates/gpsd.j2
+    dest: /etc/default/gpsd
+
+- name: Restart gpsd
+  service:
+    name: gpsd
+    state: restarted
+
+- name: GPS logger service start
+  shell: |
+    mkdir -p /var/gps-logger
+    cd /var/gps-logger
+    docker system prune -f
+    docker compose down
+    curl -sSL -o /var/gps-logger/docker-compose.yml https://raw.githubusercontent.com/ktr03rtk/go-gps-logger/main/docker-compose.yml
+    docker compose up -d
