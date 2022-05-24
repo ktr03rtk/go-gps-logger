@@ -60,6 +60,6 @@ jobs:
     needs:
       - trivy_receiver
       - trivy_uploader
-    uses: ./.github/workflows/build-workflow.yml
+    uses: ./.github/workflows/upload-artifact-workflow.yml
     with:
       tag: ${{ github.ref_name }}
