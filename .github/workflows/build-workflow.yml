@@ -59,7 +59,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
           build-args: TZ=${{ env.TZ }}
           push: true
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.tag}}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.tag}}
           cache-from: type=local,src=/tmp/.buildx-${{ inputs.targetDir }}-cache
           cache-to: type=local,dest=/tmp/.buildx-${{ inputs.targetDir }}-cache-new,mode=max
 
