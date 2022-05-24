@@ -60,6 +60,8 @@ jobs:
     needs:
       - trivy_receiver
       - trivy_uploader
-    uses: ./.github/workflows/upload-artifact-workflow.yml
-    with:
-      tag: ${{ github.ref_name }}
+    steps:
+      - name: Release gpls logger
+        uses: ./.github/workflows/upload-artifact-workflow.yml
+        with:
+          tag: ${{ github.ref_name }}
