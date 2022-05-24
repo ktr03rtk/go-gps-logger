@@ -1,0 +1,52 @@
+---
+- name: Install gpsd packages
+  apt:
+    name: gpsd
+
+- name: Set gpsd config
+  template:
+    src: templates/gpsd.j2
+    dest: /etc/default/gpsd
+
+- name: Restart gpsd
+  service:
+    name: gpsd
+    state: restarted
+
+- name: Create gps logger directory
+  file:
+    path: /var/opt/gps_uploader/cert
+    state: directory
+    mode: 0755
+
+- name: Copy mqtt certs file
+  copy:
+    src: "{{ playbook_dir }}/../uploader/cert"
+    dest: /var/opt/gps_uploader
+
+- name: Copy docker-compose.yml
+  copy:
+    src: "{{ playbook_dir }}/../docker-compose-template.yml"
+    dest: /var/opt/gps_uploader/docker-compose.yml
+
+- name: Replace placeholder in docker-compose.yml
+  replace:
+    path: /var/opt/gps_uploader/docker-compose.yml
+    regexp: <IMAGE_TAG>
+    replace: "{{ IMAGE_TAG }}"
+
+- name: Create environment file
+  blockinfile:
+    path: /var/opt/gps_uploader/.env
+    create: true
+    block: |
+      TOPIC: "{{ TOPIC }}"
+      MQTT_HOST: "{{ MQTT_HOST }}"
+      MQTT_PORT: "{{ MQTT_PORT }}"
+      MQTT_CLIENT: "{{ MQTT_CLIENT }}"
+
+- name: Start gps logger
+  shell: |
+    cd /var/opt/gps_uploader
+    docker system prune -af
+    docker compose up -d

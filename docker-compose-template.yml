@@ -18,7 +18,7 @@ services:
     image: ghcr.io/ktr03rtk/go-gps-logger/uploader:<IMAGE_TAG>
     volumes:
       - /var/data/gps:/var/data/gps
-      - /var/opt/gps/cert:/opt/gps_uploader/cert
+      - /var/opt/gps_uploader/cert:/var/opt/gps_uploader/cert
     network_mode: host
     environment:
       SOURCE_DIRECTORY: /var/data/gps/raw
@@ -26,9 +26,9 @@ services:
       QOS: 1
       KEEP_ALIVE: 60
       CONNECT_RETRY_DELAY: 10000
-      CA_PATH: /opt/gps_uploader/cert/ca.crt
-      CERT_PATH: /opt/gps_uploader/cert/client.crt
-      KEY_PATH: /opt/gps_uploader/cert/client.key
+      CA_PATH: /var/opt/gps_uploader/cert/ca.crt
+      CERT_PATH: /var/opt/gps_uploader/cert/client.crt
+      KEY_PATH: /var/opt/gps_uploader/cert/client.key
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
       MQTT_CLIENT: ${MQTT_CLIENT}
