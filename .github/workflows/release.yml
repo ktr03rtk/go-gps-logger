@@ -28,7 +28,7 @@ jobs:
     needs: test_uploader
     uses: ./.github/workflows/build-workflow.yml
     with:
-      targetDir: receiver
+      targetDir: uploader
       tag: ${{ github.ref_name }}
 
   trivy_receiver:
