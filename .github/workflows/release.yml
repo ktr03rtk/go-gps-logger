@@ -56,12 +56,9 @@ jobs:
           severity: CRITICAL
 
   release:
-    runs-on: ubuntu-20.04
     needs:
       - trivy_receiver
       - trivy_uploader
-    steps:
-      - name: Release gpls logger
-        uses: ./.github/workflows/upload-artifact-workflow.yml
-        with:
-          tag: ${{ github.ref_name }}
+    uses: ./.github/workflows/upload-artifact-workflow.yml
+    with:
+      tag: ${{ github.ref_name }}
