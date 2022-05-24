@@ -1,13 +1,12 @@
-name: Create and publish a uploader image
+name: Create and publish a receiver image
 
 on:
   push:
     paths:
-      - uploader/**
+      - receiver/**
 
 jobs:
   test:
     uses: ./.github/workflows/test-workflow.yml
     with:
-      targetDir: uploader
-
+      targetDir: receiver
