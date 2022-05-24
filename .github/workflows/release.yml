@@ -2,8 +2,8 @@ name: Create and publish a receiver image
 
 on:
   push:
-    tags
-    # tags:
+    tags:
+      - test*
     #   - v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
