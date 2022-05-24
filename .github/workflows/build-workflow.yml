@@ -65,7 +65,7 @@ jobs:
 
       - name: Output image reference
         id: output
-        run: echo "::set-output name=ref::${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.tag}}
+        run: echo "::set-output name=ref::${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.tag}}"
 
       - name: Move cache
         run: |
