@@ -8,10 +8,10 @@ services:
     network_mode: host
     tty: true
     volumes:
-      - /var/data/gps:/var/data/gps
+      - /var/data/raw:/var/data/raw
       - ${PWD}/cert:/var/opt/gps_uploader/cert
     environment:
-      SOURCE_DIRECTORY: /var/data/gps/raw
+      SOURCE_DIRECTORY: /var/data/raw/gps
       UPLOAD_INTERVAL_SECONDS: 300
       QOS: 1
       KEEP_ALIVE: 60

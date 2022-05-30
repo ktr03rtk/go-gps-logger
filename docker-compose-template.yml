@@ -3,25 +3,24 @@ services:
     container_name: receiver
     image: ghcr.io/ktr03rtk/go-gps-logger/receiver:<IMAGE_TAG>
     volumes:
-      - /var/data/gps:/var/data/gps
+      - /var/data/raw:/var/data/raw
     network_mode: host
     # extra_hosts:
     #   - host.docker.internal:host-gateway
     environment:
-      DIST_DIRECTORY: /var/data/gps/raw
+      DIST_DIRECTORY: /var/data/raw/gps
       INTERVAL_SECONDS: 10
     restart: always
-    pull_policy: always
 
   uploader:
     container_name: uploader
     image: ghcr.io/ktr03rtk/go-gps-logger/uploader:<IMAGE_TAG>
     volumes:
-      - /var/data/gps:/var/data/gps
+      - /var/data/raw:/var/data/raw
       - /var/opt/gps_uploader/cert:/var/opt/gps_uploader/cert
     network_mode: host
     environment:
-      SOURCE_DIRECTORY: /var/data/gps/raw
+      SOURCE_DIRECTORY: /var/data/raw/gps
       UPLOAD_INTERVAL_SECONDS: 300
       QOS: 1
       KEEP_ALIVE: 60
