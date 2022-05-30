@@ -18,6 +18,7 @@ const connectionWaitTime = 1000 // milliseconds
 
 type mqttAdapter struct {
 	connectionManager *autopaho.ConnectionManager
+	clientID          string
 	topic             string
 	qos               byte
 }
@@ -44,6 +45,7 @@ func NewMqttAdapter(ctx context.Context) (repository.PayloadUploadRepository, er
 
 	return &mqttAdapter{
 		connectionManager: cm,
+		clientID:          cfg.clientID,
 		topic:             cfg.topic,
 		qos:               cfg.qos,
 	}, nil
@@ -54,9 +56,11 @@ func (a *mqttAdapter) Upload(ctx context.Context, payload *model.Payload) ([]mod
 		return []model.BaseFilePath{}, nil
 	}
 
+	topic := a.topic + "/" + a.clientID + "/" + string(payload.FilePaths[0])
+
 	_, err := a.connectionManager.Publish(ctx, &paho.Publish{
 		QoS:     a.qos,
-		Topic:   a.topic,
+		Topic:   topic,
 		Payload: payload.Message,
 	})
 	if err != nil {
