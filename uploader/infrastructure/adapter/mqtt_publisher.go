@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"log"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/eclipse/paho.golang/autopaho"
@@ -14,7 +15,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-const connectionWaitTime = 1000 // milliseconds
+const (
+	connectionWaitTime = 1000 // milliseconds
+	timeFormat         = "2006-01-02-15-04"
+)
 
 type mqttAdapter struct {
 	connectionManager *autopaho.ConnectionManager
@@ -56,14 +60,16 @@ func (a *mqttAdapter) Upload(ctx context.Context, payload *model.Payload) ([]mod
 		return []model.BaseFilePath{}, nil
 	}
 
-	topic := a.topic + "/" + a.clientID + "/" + string(payload.FilePaths[0])
+	topic, err := a.createTopic(payload)
+	if err != nil {
+		return nil, err
+	}
 
-	_, err := a.connectionManager.Publish(ctx, &paho.Publish{
+	if _, err := a.connectionManager.Publish(ctx, &paho.Publish{
 		QoS:     a.qos,
 		Topic:   topic,
 		Payload: payload.Message,
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, errors.Wrapf(err, "failed to publish")
 	}
 
@@ -91,4 +97,15 @@ func getMqttConfig(cfg config, tlsCfg *tls.Config) autopaho.ClientConfig {
 			},
 		},
 	}
+}
+
+func (a *mqttAdapter) createTopic(payload *model.Payload) (string, error) {
+	t, err := time.Parse(timeFormat, strings.TrimSuffix(string(payload.FilePaths[0]), ".dat"))
+	if err != nil {
+		return "", errors.Wrapf(err, "failed to parse date")
+	}
+
+	topic := a.topic + "/thing=" + a.clientID + t.Format("/year=2006/month=01/day=02/") + string(payload.FilePaths[0])
+
+	return topic, nil
 }
