@@ -93,32 +93,24 @@ func (c *gpsAdapter) receive(ctx context.Context, dataCh <-chan receivedData) {
 			return
 		case r := <-dataCh:
 			c.mu.Lock()
-			c.latestData = convert(*r.tpvReport)
-			c.err = r.err
+			if r.err != nil {
+				c.latestData = nil
+				c.err = r.err
+
+				continue
+			}
+
+			c.latestData, c.err = convert(*r.tpvReport)
 			c.mu.Unlock()
 		}
 	}
 }
 
-func convert(r gpsd.TPVReport) *model.Gps {
-	data := &model.Gps{
-		Timestamp: r.Time,
-		Mode:      int(r.Mode),
+func convert(r gpsd.TPVReport) (*model.Gps, error) {
+	g, err := model.NewGps(r.Time.Local(), int(r.Mode), r.Lat, r.Lon, r.Alt, r.Speed)
+	if err != nil {
+		return nil, err
 	}
 
-	if r.Mode == 1 {
-		return data
-	}
-
-	data.Lat = r.Lat
-	data.Lon = r.Lon
-
-	if r.Mode == 2 {
-		return data
-	}
-
-	data.Alt = r.Alt
-	data.Speed = r.Speed
-
-	return data
+	return g, nil
 }
