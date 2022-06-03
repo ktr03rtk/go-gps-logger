@@ -46,7 +46,7 @@ func (p *gpsPersistence) Write(g *model.Gps) error {
 }
 
 func createFilePath(distDir string, t time.Time) string {
-	fileName := fmt.Sprintf("%s.dat", t.Format(("2006-01-02-15-04")))
+	fileName := fmt.Sprintf("%s.dat", t.Format(("2006-01-02-15-04-05")))
 
 	return filepath.Join(distDir, fileName)
 }
