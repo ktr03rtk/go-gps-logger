@@ -71,16 +71,20 @@ func searchTargetFiles(sourceDir string) ([]string, error) {
 		return nil, errors.Wrapf(err, "failed to find files")
 	}
 
-	sort.Strings(allFiles)
-	targetPathLength := len(allFiles[0]) - 13
-	targetDay := allFiles[0][:targetPathLength] // /foo/bar/2022-06-03-20-46-04.dat -> /foo/bar/2022-06-03
+	if len(allFiles) == 0 {
+		return []string{}, nil
+	}
 
-	targetFiles := extractSameDayFiles(allFiles, targetPathLength, targetDay)
+	targetFiles := extractSameDayFiles(allFiles)
 
 	return targetFiles, nil
 }
 
-func extractSameDayFiles(allFiles []string, targetPathLength int, targetDay string) []string {
+func extractSameDayFiles(allFiles []string) []string {
+	sort.Strings(allFiles)
+	targetPathLength := len(allFiles[0]) - 13
+	targetDay := allFiles[0][:targetPathLength] // /foo/bar/2022-06-03-20-46-04.dat -> /foo/bar/2022-06-03
+
 	fileLength := 0
 
 	for _, f := range allFiles {
