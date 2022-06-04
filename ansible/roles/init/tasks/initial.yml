@@ -64,6 +64,7 @@
       - curl
       - gnupg
       - lsb-release
+      - unzip
 
 - name: Add docker GPG key
   apt_key:
@@ -86,3 +87,25 @@
     name: "{{ ansible_ssh_user }}"
     groups: docker
     append: yes
+
+- name: Check gpio shutdown file
+  stat:
+    path: /opt/gpio-shutdown
+  register: gpio_shutdown
+
+- name: Download gpio-shutdown file
+  get_url:
+    url: https://raw.githubusercontent.com/ktr03rtk/gpio-shutdown/main/scripts/setup.sh
+    dest: /tmp/gpio_shutdown_setup.sh
+    mode: "0500"
+  when: gpio_shutdown.stat.exists == false
+
+- name: Install gpio-shutdown
+  shell: /tmp/gpio_shutdown_setup.sh
+  when: gpio_shutdown.stat.exists == false
+
+- name: Start service gpio-shutdown
+  service:
+    name: gpio-shutdown
+    enabled: yes
+    state: started
