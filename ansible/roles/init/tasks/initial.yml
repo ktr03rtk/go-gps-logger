@@ -109,3 +109,11 @@
     name: gpio-shutdown
     enabled: yes
     state: started
+
+- name: Disable wifi and bluetooth
+  blockinfile:
+    path: /boot/firmware/config.txt
+    create: true
+    block: |
+      dtoverlay=disable-wifi
+      dtoverlay=disable-bt
