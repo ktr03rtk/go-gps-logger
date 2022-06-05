@@ -1,4 +1,15 @@
 ---
+- name: Create udev rule file
+  blockinfile:
+    path: /etc/udev/rules.d/90-ft232-gps.rules
+    create: true
+    block: SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ttyUSB-FT232-GPS"
+
+- name: Restart udev
+  service:
+    name: udev
+    state: restarted
+
 - name: Install gpsd packages
   apt:
     name: gpsd

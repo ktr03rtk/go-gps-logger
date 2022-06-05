@@ -32,3 +32,4 @@ services:
       MQTT_PORT: ${MQTT_PORT}
       MQTT_CLIENT: ${MQTT_CLIENT}
       TOPIC: ${TOPIC}
+    restart: always

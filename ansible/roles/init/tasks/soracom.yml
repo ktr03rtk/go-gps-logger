@@ -1,0 +1,17 @@
+---
+- name: Check setup_air file
+  stat:
+    path: /var/opt/setup_air.sh
+  register: setup_air
+
+- name: Download setup_air file
+  get_url:
+    url: https://soracom-files.s3.amazonaws.com/setup_air.sh
+    dest: /var/opt/setup_air.sh
+    mode: "0500"
+  when: setup_air.stat.exists == false
+
+- name: Install setup_air
+  shell: /var/opt/setup_air.sh
+  # shell: /var/opt/setup_air.sh du.soracom.io # plan-DU use
+  when: setup_air.stat.exists == false
