@@ -11,7 +11,7 @@
   apt:
     upgrade: full
   register: apt_action
-  retries: 100
+  retries: 300
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
 
 - name: Restrict password authentication
@@ -58,6 +58,7 @@
 
 - name: Install packages
   apt:
+    install_recommends: no
     name:
       - apt-transport-https
       - ca-certificates
@@ -87,6 +88,16 @@
     name: "{{ ansible_ssh_user }}"
     groups: docker
     append: yes
+
+- name: Create docker daemon.json file
+  template:
+    src: templates/daemon.json.j2
+    dest: /etc/docker/daemon.json
+
+- name: Restart docker
+  service:
+    name: docker
+    state: restarted
 
 - name: Check gpio shutdown file
   stat:
