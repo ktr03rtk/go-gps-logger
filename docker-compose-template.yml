@@ -33,3 +33,12 @@ services:
       MQTT_CLIENT: ${MQTT_CLIENT}
       TOPIC: ${TOPIC}
     restart: always
+
+  liveness_client:
+    container_name: liveness_client
+    image: alpine:latest
+    environment:
+      API_KEY: ${API_KEY}
+      ENDPOINT: ${ENDPOINT}
+    restart: always
+    entrypoint: ["sh", "-c", "while true ; do wget -qO - --header=\"x-api-key: ${API_KEY}\" ${ENDPOINT} ; sleep 60 ; done ;"]
