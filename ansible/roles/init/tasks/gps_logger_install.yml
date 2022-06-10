@@ -55,6 +55,8 @@
       MQTT_HOST: "{{ MQTT_HOST }}"
       MQTT_PORT: "{{ MQTT_PORT }}"
       MQTT_CLIENT: "{{ MQTT_CLIENT }}"
+      API_KEY: "{{ API_KEY }}"
+      ENDPOINT: "{{ ENDPOINT }}"
 
 - name: Start gps logger
   shell: |
